@@ -1,3 +1,5 @@
+import detectedCollision from './collisionDetection.js';
+
 export default class ball {
   constructor(game) {
     this.radius = 7;
@@ -12,6 +14,7 @@ export default class ball {
     this.gameWidth = game.gameWidth;
     this.gameHeight = game.gameHeight;
     this.game = game;
+    this.displayOnScreen = true;
   }
 
   draw(context) {
@@ -47,16 +50,6 @@ export default class ball {
       this.speed.y = -this.speed.y;
 
     // Check if hitting paddle
-    let topOfPaddle = this.game.paddle.position.y;
-    let leftEdgeOfPaddle = this.game.paddle.position.x;
-    let rightEdgeOfPaddle =
-      this.game.paddle.position.x + this.game.paddle.width;
-
-    if (
-      this.position.y + this.radius >= topOfPaddle &&
-      this.position.x >= leftEdgeOfPaddle &&
-      this.position.x <= rightEdgeOfPaddle
-    )
-      this.speed.y = -this.speed.y;
+    if (detectedCollision(this, this.game.paddle)) this.speed.y = -this.speed.y;
   }
 }

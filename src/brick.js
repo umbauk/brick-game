@@ -1,9 +1,12 @@
+import detectedCollision from './collisionDetection.js';
+
 export default class Brick {
   constructor(game, position) {
     this.position = position;
     this.width = 80;
     this.height = 20;
     this.game = game;
+    this.displayOnScreen = true;
   }
 
   draw(context) {
@@ -17,5 +20,7 @@ export default class Brick {
     );
   }
 
-  update(deltaTime) {}
+  update(deltaTime) {
+    if (detectedCollision(this.game.ball, this)) this.displayOnScreen = false;
+  }
 }
