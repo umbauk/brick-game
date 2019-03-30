@@ -21,6 +21,9 @@ export default class Brick {
   }
 
   update(deltaTime) {
-    if (detectedCollision(this.game.ball, this)) this.displayOnScreen = false;
+    if (detectedCollision(this.game.ball, this)) {
+      this.displayOnScreen = false;
+      this.game.ball.speed.y = -this.game.ball.speed.y;
+    }
   }
 }

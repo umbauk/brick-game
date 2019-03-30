@@ -4,8 +4,8 @@ export default class ball {
   constructor(game) {
     this.radius = 7;
     this.position = {
-      x: 0 + this.radius,
-      y: 0 + this.radius,
+      x: 50 + this.radius,
+      y: 180 + this.radius,
     };
     this.speed = {
       x: 4,

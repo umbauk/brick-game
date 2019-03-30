@@ -25,6 +25,6 @@ export default class Game {
 
   update(deltaTime) {
     this.gameObjects.forEach(object => object.update(deltaTime));
-    this.gameObjects.filter(object => object.displayOnScreen);
+    this.gameObjects = this.gameObjects.filter(object => object.displayOnScreen);
   }
 }
