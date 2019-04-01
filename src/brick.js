@@ -10,7 +10,7 @@ export default class Brick {
   }
 
   draw(context) {
-    context.fillStyle = '#0f0';
+    context.fillStyle = '#880';
     context.fillRect(this.position.x, this.position.y, this.width, this.height);
     context.strokeRect(
       this.position.x,
