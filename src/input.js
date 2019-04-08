@@ -15,7 +15,7 @@ export default class InputHandler {
 
         // spacebar to start game
         case 32:
-          //
+          game.toggleMenu();
           break;
 
         // escape to pause

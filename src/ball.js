@@ -3,13 +3,17 @@ import detectedCollision from './collisionDetection.js';
 export default class ball {
   constructor(game) {
     this.radius = 7;
+    this.startPositionX = 50 + this.radius;
+    this.startPositionY = 180 + this.radius;
+    this.startSpeedX = 4;
+    this.startSpeedY = 4;
     this.position = {
-      x: 50 + this.radius,
-      y: 180 + this.radius,
+      x: this.startPositionX,
+      y: this.startPositionY,
     };
     this.speed = {
-      x: 4,
-      y: 4,
+      x: this.startSpeedX,
+      y: this.startSpeedY,
     };
     this.gameWidth = game.gameWidth;
     this.gameHeight = game.gameHeight;
@@ -35,19 +39,29 @@ export default class ball {
     this.position.x += this.speed.x;
     this.position.y += this.speed.y;
 
-    // Check if hitting top or bottom of canvas
+    // Check if hitting side of canvas
     if (
       this.position.x - this.radius <= 0 ||
       this.position.x > this.gameWidth - this.radius
-    )
+    ) {
       this.speed.x = -this.speed.x;
+    }
 
-    // Check if hitting sides of canvas
-    if (
-      this.position.y - this.radius <= 0 ||
-      this.position.y > this.gameHeight - this.radius
-    )
-      this.speed.y = -this.speed.y;
+    // Check if hitting top of canvas
+    if (this.position.y - this.radius <= 0) this.speed.y = -this.speed.y;
+
+    // Check if hitting bottom of canvas
+    if (this.position.y > this.gameHeight - this.radius) {
+      this.game.lives--;
+      this.position = {
+        x: this.startPositionX,
+        y: this.startPositionY,
+      };
+      this.speed = {
+        x: this.startSpeedX,
+        y: this.startSpeedY,
+      };
+    }
 
     // Check if hitting paddle
     if (detectedCollision(this, this.game.paddle)) this.speed.y = -this.speed.y;
