@@ -8,7 +8,7 @@
 import Paddle from './paddle.js';
 import Ball from './ball.js';
 import InputHandler from './input.js';
-import { buildLevel, level1 } from './levels.js';
+import { buildLevel, level1, level2 } from './levels.js';
 
 const GAMESTATE = {
   RUNNING: 0,
@@ -25,12 +25,14 @@ export default class Game {
     this.paddle = new Paddle(this);
     this.ball = new Ball(this);
     this.bricks = buildLevel(this, level1);
+    this.currentGameState = GAMESTATE.MENU;
+    this.gameObjects = [];
+    new InputHandler(this.paddle, this);
   }
 
   start() {
-    this.currentGameState = GAMESTATE.MENU;
+    this.currentGameState = GAMESTATE.RUNNING;
     this.gameObjects = [this.paddle, this.ball, ...this.bricks];
-    new InputHandler(this.paddle, this);
     this.lives = 3;
   }
 
@@ -79,12 +81,21 @@ export default class Game {
     if (this.currentGameState === GAMESTATE.PAUSED) return;
     if (this.currentGameState === GAMESTATE.MENU) return;
     if (this.currentGameState === GAMESTATE.GAMEOVER) return;
+    if (this.currentGameState === GAMESTATE.NEXTLEVEL) return;
+
+    let bricksOnScreen = false;
+    this.bricks.forEach(brick => {
+      if (brick.displayOnScreen) bricksOnScreen = true;
+    });
+
+    if (bricksOnScreen === false) {
+      this.nextLevel();
+    }
 
     this.gameObjects.forEach(object => object.update(deltaTime));
     this.gameObjects = this.gameObjects.filter(
       object => object.displayOnScreen,
     );
-    console.log(`Lives: ${this.lives}`);
   }
 
   togglePause() {
@@ -99,5 +110,9 @@ export default class Game {
     if (this.currentGameState === GAMESTATE.MENU) {
       this.currentGameState = GAMESTATE.RUNNING;
     }
+  }
+
+  nextLevel() {
+    this.bricks = buildLevel(this, level2);
   }
 }
