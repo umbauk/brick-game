@@ -53,17 +53,21 @@ export default class ball {
     // Check if hitting bottom of canvas
     if (this.position.y > this.gameHeight - this.radius) {
       this.game.lives--;
-      this.position = {
-        x: this.startPositionX,
-        y: this.startPositionY,
-      };
-      this.speed = {
-        x: this.startSpeedX,
-        y: this.startSpeedY,
-      };
+      this.resetPositionAndSpeed();
     }
 
     // Check if hitting paddle
     if (detectedCollision(this, this.game.paddle)) this.speed.y = -this.speed.y;
+  }
+
+  resetPositionAndSpeed() {
+    this.position = {
+      x: this.startPositionX,
+      y: this.startPositionY,
+    };
+    this.speed = {
+      x: this.startSpeedX,
+      y: this.startSpeedY,
+    };
   }
 }

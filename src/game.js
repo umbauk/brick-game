@@ -1,8 +1,9 @@
 // TODO
-// [] new level
+// [x] new level
 // [] side collision
-// [] lives tracker
+// [x] lives tracker
 // [] score tracker
+// [] random level generator
 // [] high score table (need database?)
 
 import Paddle from './paddle.js';
@@ -24,16 +25,20 @@ export default class Game {
     this.gameHeight = gameHeight;
     this.paddle = new Paddle(this);
     this.ball = new Ball(this);
-    this.bricks = buildLevel(this, level1);
+    this.bricks = [];
     this.currentGameState = GAMESTATE.MENU;
     this.gameObjects = [];
+    this.score = 0;
     new InputHandler(this.paddle, this);
   }
 
   start() {
-    this.currentGameState = GAMESTATE.RUNNING;
-    this.gameObjects = [this.paddle, this.ball, ...this.bricks];
-    this.lives = 3;
+    if (this.currentGameState === GAMESTATE.MENU) {
+      this.currentGameState = GAMESTATE.RUNNING;
+      this.bricks = buildLevel(this, level1);
+      this.gameObjects = [this.paddle, this.ball];
+      this.lives = 3;
+    }
   }
 
   draw(context) {
@@ -67,14 +72,28 @@ export default class Game {
       );
     } else if (this.lives === 0) {
       this.currentGameState = GAMESTATE.GAMEOVER;
-      context.fillStyle = 'rgba(0,0,0,0.5)';
+      context.fillStyle = 'rgba(0,0,0,1)';
       context.fillRect(0, 0, this.gameWidth, this.gameHeight);
       context.font = '30px Arial';
       context.fillStyle = 'white';
       context.textAlign = 'center';
       context.fillText('GAME OVER :(', this.gameWidth / 2, this.gameHeight / 2);
+      context.fillText(
+        `Score: ${this.score}`,
+        this.gameWidth / 2,
+        this.gameHeight / 2 + 40,
+      );
+    } else {
+      context.textAlign = 'left';
+      context.fillStyle = 'black';
+      context.font = '20px Arial';
+      context.fillText(`Lives: ${this.lives}`, this.gameWidth - 80, 30);
+      context.fillText(`Score: ${this.score}`, 10, 30);
+
+      [...this.gameObjects, ...this.bricks].forEach(object =>
+        object.draw(context),
+      );
     }
-    this.gameObjects.forEach(object => object.draw(context));
   }
 
   update(deltaTime) {
@@ -83,19 +102,14 @@ export default class Game {
     if (this.currentGameState === GAMESTATE.GAMEOVER) return;
     if (this.currentGameState === GAMESTATE.NEXTLEVEL) return;
 
-    let bricksOnScreen = false;
-    this.bricks.forEach(brick => {
-      if (brick.displayOnScreen) bricksOnScreen = true;
-    });
-
-    if (bricksOnScreen === false) {
+    if (this.bricks.length === 0) {
       this.nextLevel();
     }
 
-    this.gameObjects.forEach(object => object.update(deltaTime));
-    this.gameObjects = this.gameObjects.filter(
-      object => object.displayOnScreen,
+    [...this.gameObjects, ...this.bricks].forEach(object =>
+      object.update(deltaTime),
     );
+    this.bricks = this.bricks.filter(object => object.displayOnScreen);
   }
 
   togglePause() {
@@ -114,5 +128,6 @@ export default class Game {
 
   nextLevel() {
     this.bricks = buildLevel(this, level2);
+    this.ball.resetPositionAndSpeed();
   }
 }
