@@ -2,7 +2,7 @@
 // [x] new level
 // [] side collision
 // [x] lives tracker
-// [] score tracker
+// [x] score tracker
 // [] random level generator
 // [] high score table (need database?)
 

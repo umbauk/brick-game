@@ -21,9 +21,19 @@ export default class Brick {
   }
 
   update(deltaTime) {
-    if (detectedCollision(this.game.ball, this)) {
+    // side collision detection not working properly
+    let collisionResult = detectedCollision(this.game.ball, this);
+    if (collisionResult) {
+      console.log(collisionResult);
       this.displayOnScreen = false;
-      this.game.ball.speed.y = -this.game.ball.speed.y;
+      this.game.score += 50;
+      if (collisionResult === 'top' || collisionResult === 'bottom')
+        this.game.ball.speed.y = -this.game.ball.speed.y;
+      else if (collisionResult === 'left' || collisionResult === 'right')
+        this.game.ball.speed.x = -this.game.ball.speed.x;
+      else {
+        console.log('Should not be here');
+      }
     }
   }
 }
