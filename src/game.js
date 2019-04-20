@@ -1,6 +1,6 @@
 // TODO
 // [x] new level
-// [] side collision
+// [x] side collision
 // [x] lives tracker
 // [x] score tracker
 // [] random level generator
@@ -9,7 +9,7 @@
 import Paddle from './paddle.js';
 import Ball from './ball.js';
 import InputHandler from './input.js';
-import { buildLevel, level1, level2 } from './levels.js';
+import { buildLevel, level1 } from './levels.js';
 
 const GAMESTATE = {
   RUNNING: 0,
@@ -127,7 +127,9 @@ export default class Game {
   }
 
   nextLevel() {
-    this.bricks = buildLevel(this, level2);
+    this.bricks = buildLevel(this);
+    this.ball.startSpeedX++;
+    this.ball.startSpeedY++;
     this.ball.resetPositionAndSpeed();
   }
 }
